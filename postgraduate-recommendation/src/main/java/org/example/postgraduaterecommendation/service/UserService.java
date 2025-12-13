@@ -8,6 +8,7 @@ import org.example.postgraduaterecommendation.dox.StudentInfo;
 import org.example.postgraduaterecommendation.dox.User;
 import org.example.postgraduaterecommendation.dto.CounselorAddDTO;
 import org.example.postgraduaterecommendation.dto.StudentRegisterDTO;
+import org.example.postgraduaterecommendation.dto.UserInfoDTO;
 import org.example.postgraduaterecommendation.exception.Code;
 import org.example.postgraduaterecommendation.exception.XException;
 import org.example.postgraduaterecommendation.repository.*;
@@ -346,4 +347,18 @@ public class UserService {
     //------------------------------------------------------------------------------
 
 
+    // 查询学生信息
+    public UserInfoDTO getStudentUserInfo(long id) {
+        return userRepository.findStudentUserInfo(id);
+    }
+
+    // 查询学院管理员信息
+    public UserInfoDTO getCollegeAdminUserInfo(long id) {
+        return userRepository.findCollegeAdminUserInfo(id);
+    }
+
+    // 查询辅导员信息
+    public UserInfoDTO getConselorUserInfo(long id) {
+        return userRepository.findConselorUserInfo(id);
+    }
 }

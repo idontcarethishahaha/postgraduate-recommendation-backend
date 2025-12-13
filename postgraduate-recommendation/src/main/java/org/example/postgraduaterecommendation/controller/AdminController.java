@@ -185,9 +185,9 @@ public class AdminController {
 
 
     // 为特定类别添加辅导员
-    @PostMapping("collegeadmin/counselors")
-    public ResultVO addCounselor(@RequestBody CounselorAddDTO counselorAddDTO, HttpServletRequest request) {
-        Long cid = (Long) request.getAttribute("cid");
+    @PostMapping("collegeadmin/counselors")// HttpServletRequest request,这个参数不要了
+    public ResultVO addCounselor(@RequestBody CounselorAddDTO counselorAddDTO,@RequestAttribute("cid") Long cid) {
+        //Long cid = (Long) request.getAttribute("cid");
         if (cid == null) {
             throw XException.builder().code(Code.FORBIDDEN).build();
         }
