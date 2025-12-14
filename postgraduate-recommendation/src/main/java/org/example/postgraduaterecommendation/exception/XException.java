@@ -14,7 +14,7 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class XException extends RuntimeException {
     private Code code; // 通用
-    private int number;
+    private int codeNum;// 自定义补充
     private String message;
 
 }

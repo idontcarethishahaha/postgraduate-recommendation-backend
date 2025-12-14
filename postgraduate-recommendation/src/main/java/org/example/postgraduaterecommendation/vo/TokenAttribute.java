@@ -9,5 +9,5 @@ public interface TokenAttribute {
     String CID = "cid";//学院id
     String MCID = "mcid";//类别id
     String MID = "mid";//专业id
-    String ROLE = "role";//专业id
+    String ROLE = "role";
 }

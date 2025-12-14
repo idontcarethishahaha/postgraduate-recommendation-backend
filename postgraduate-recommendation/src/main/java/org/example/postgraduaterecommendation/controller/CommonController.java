@@ -10,6 +10,8 @@ import org.example.postgraduaterecommendation.vo.ResultVO;
 import org.example.postgraduaterecommendation.vo.TokenAttribute;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 /**
  * @author wuwenjin
  */
@@ -22,19 +24,20 @@ public class CommonController {
     @GetMapping("info")
     public ResultVO getInfo(@RequestAttribute(TokenAttribute.UID) long uid,
                             @RequestAttribute(TokenAttribute.ROLE) String role) {
-        UserInfoDTO userInfoDTO;
+        Optional<UserInfoDTO> userInfoDTO;
         switch (role) {
             case User.COLLEGE_ADMIN:
                 userInfoDTO = userService.getCollegeAdminUserInfo(uid);
                 break;
             case User.COUNSELOR:
-                userInfoDTO = userService.getConselorUserInfo(uid);
+                userInfoDTO = userService.getCounselorUserInfo(uid);
                 break;
             case User.STUDENT:
                 userInfoDTO = userService.getStudentUserInfo(uid);
                 break;
             case User.ADMIN:
-                userInfoDTO = UserInfoDTO.builder().name("admin").build();
+                //userInfoDTO = UserInfoDTO.builder().name("admin").build();
+                userInfoDTO = Optional.of(UserInfoDTO.builder().name("admin").build());
                 break;
             default:
                 throw XException.builder().code(Code.FORBIDDEN).build();
@@ -42,10 +45,11 @@ public class CommonController {
         return ResultVO.success(userInfoDTO);
     }
 
-//    @PostMapping("passwords")
-//    public ResultVO postPassword(@RequestBody User user,
-//                                 @RequestAttribute(TokenAttribute.UID) long uid) {
-//        userService.updatePassword(uid, user.getPassword());
-//        return ResultVO.success();
-//    }
+    // 所有用户都有权修改密码
+    @PostMapping("passwords")
+    public ResultVO postPassword(@RequestBody User user,
+                                 @RequestAttribute(TokenAttribute.UID) long uid) {
+        userService.updatePassword(uid, user.getPassword());
+        return ResultVO.success();
+    }
 }

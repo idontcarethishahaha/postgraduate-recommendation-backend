@@ -3,11 +3,11 @@ package org.example.postgraduaterecommendation.controller;
 /*
  * @author wuwenjin
  */
-
 import lombok.extern.slf4j.Slf4j;
 import org.example.postgraduaterecommendation.exception.Code;
 import org.example.postgraduaterecommendation.exception.XException;
 import org.example.postgraduaterecommendation.vo.ResultVO;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -22,7 +22,11 @@ public class ExceptionController {
             return ResultVO.error(e.getCode());// 通用的
         }
         // 自定义的
-        return ResultVO.error(e.getNumber(), e.getMessage()); // 方法重载
+        return ResultVO.error(e.getCodeNum(), e.getMessage()); // 方法重载
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResultVO handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        return ResultVO.error(Code.BAD_REQUEST.getCode(), "唯一约束冲突" + exception.getMessage());
     }
     // 兜底处理
     @ExceptionHandler(Exception.class)

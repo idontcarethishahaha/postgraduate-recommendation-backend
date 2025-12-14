@@ -20,19 +20,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "major_category")
 public class MajorCategory {
+
+
     @Id
     @CreatedBy
     private Long id;
-
     private String name;
-
     private Long collegeId;
-
     private String calculationRule; //在数据库中是json
+    private LocalDateTime deadlineTime;
 
     @ReadOnlyProperty
     private LocalDateTime createTime;
-
     @ReadOnlyProperty
     private LocalDateTime updateTime;
 }

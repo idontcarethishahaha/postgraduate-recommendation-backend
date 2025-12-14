@@ -17,6 +17,6 @@ import lombok.NoArgsConstructor;
 public class UserInfoDTO {
     private String name;//用户名
     private String collegeName;//学院名
-    private String MajorCategories;//返给前端一个类别数组
+    private String majorCategories;//返给前端一个类别数组
     private String majorName;//专业名
 }

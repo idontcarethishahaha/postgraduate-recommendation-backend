@@ -23,12 +23,10 @@ public class College {
     @Id
     @CreatedBy //雪花算法生成主键
     private Long id;
-
     private String name;
 
     @ReadOnlyProperty
     private LocalDateTime createTime;
-
     @ReadOnlyProperty
     private LocalDateTime updateTime;
 }

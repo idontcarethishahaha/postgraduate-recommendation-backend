@@ -23,16 +23,12 @@ public class Major {
     @Id
     @CreatedBy
     private Long id;
-
     private String name;
-
     private Long collegeId;
-
     private Long majorCategoryId;
 
     @ReadOnlyProperty
     private LocalDateTime createTime;
-
     @ReadOnlyProperty
     private LocalDateTime updateTime;
 }

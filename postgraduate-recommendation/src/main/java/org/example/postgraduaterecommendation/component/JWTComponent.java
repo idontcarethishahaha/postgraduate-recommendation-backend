@@ -26,31 +26,29 @@ import java.util.Map;
 public class JWTComponent {
     // 私钥
     @Value("${my.secretkey}")// 读取配置中的信息
+    //@Value("${my.secretkey}")
     private String secretkey;
-
-    // 加密和解密使用同一个算法对象，无需反复创建
-    // 希望在组件对象创建完之后再对这个属性进行初始化
     private Algorithm algorithm;
 
-    @PostConstruct// 组件初始化后，初始化加密算法对象。无需反复创建
+    // 组件初始化后，初始化加密算法对象。无需反复创建
+    @PostConstruct
     private void init() {
         algorithm = Algorithm.HMAC256(secretkey);
     }
 
-    // encode 加密
-    public String encode(Map<String, Object> playload) {
-        LocalDateTime time = LocalDateTime.now().plusDays(1);// 过期时间 = 当前时间加一天
-        return JWT.create()
-                .withPayload(playload)
+    public String encode(Map<String, Object> map) {
+        // 1ds过期
+        LocalDateTime time = LocalDateTime.now().plusDays(1);
+        return encodePos(JWT.create()
+                .withPayload(map)
                 .withIssuedAt(new Date())
                 .withExpiresAt(Date.from(time.atZone(ZoneId.systemDefault()).toInstant()))
-                .sign(algorithm);
+                .sign(algorithm));
     }
 
-    // 解密
     public DecodedJWT decode(String token) {
         try {
-            return JWT.require(algorithm).build().verify(token);
+            return JWT.require(algorithm).build().verify(decodePos(token));
         } catch (TokenExpiredException | SignatureVerificationException | JWTDecodeException e) {
             if (e instanceof SignatureVerificationException || e instanceof JWTDecodeException) {
                 throw XException.builder().code(Code.FORBIDDEN).build();
@@ -58,10 +56,14 @@ public class JWTComponent {
             throw XException.builder().code(Code.TOKEN_EXPIRED).build();
         }
     }
+
+    private final int POS = 37;
+
+    private String encodePos(String str) {
+        return new StringBuilder(str).insert(POS, "W").toString();
+    }
+
+    private String decodePos(String str) {
+        return new StringBuilder(str).deleteCharAt(POS).toString();
+    }
 }
-/*
-捕获了 3 种常见的 JWT 验证异常，并根据异常类型抛出自定义的 XException：
-TokenExpiredException：token 已过期
-SignatureVerificationException：签名验证失败（token 可能被篡改，或使用了错误的密钥验证）
-JWTDecodeException：token 格式错误（无法被正确解析，如非 JWT 格式的字符串）
- */

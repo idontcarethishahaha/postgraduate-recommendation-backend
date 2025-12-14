@@ -11,115 +11,97 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * @author wuwenjin
- */
-//持久层接口
 @Repository
 public interface UserRepository extends ListCrudRepository<User, Long> {
-    Optional<User> findByAccount(String account);
-    boolean existsByAccount(String account);
-    List<User> findByCollegeIdAndRole(Long collegeId, String role);
-    Optional<User> findById(Long id);
-
-    // =============================================
 
     // 根据账号查询用户
-    // User findByAccount(@Param("account") String account);
+    Optional<User> findByAccount(@Param("account") String account);
 
-    // 通用用户信息查询
+    //通用用户信息查询（关联user_category，JSON_ARRAYAGG空值处理）
     @Query("""
             select t1.id, 
                    t1.name, 
-                   t2.name as coll_name,
-                   json_arrayagg(distinct t3.name) as categories,
-                   t4.name as major_name
+                   ifnull(t2.name, '') as college_name,
+                   ifnull(JSON_ARRAYAGG(distinct t4.name), JSON_ARRAY()) as categories,
+                   ifnull(t5.name, '') as major_name
             from user t1
-            left join college t2 on t1.college_id = t2.id
-            -- 关联专业类别（major_category）：通过导员/学生/专业多层关联
-            left join counselor_info t5 on t1.id = t5.user_id
-            left join major_category t3 on t5.major_category_id = t3.id
-            left join student_info t6 on t1.id = t6.user_id
-            left join major t4 on t6.major_id = t4.id
-            left join major_category t7 on t4.major_category_id = t7.id
+                     left join college t2 on t1.college_id = t2.id
+                     left join user_category t3 on t1.id = t3.user_id
+                     left join major_category t4 on t4.id = t3.major_category_id
+                     left join major t5 on t1.major_id = t5.id
             where t1.id=:id 
-            group by t1.id, t2.name, t4.name;
+            group by t1.id, t1.name, t2.name, t5.name;
             """)
-    UserInfoDTO find(@Param("id") long id);
+    Optional<UserInfoDTO> find(@Param("id") long id);
 
-    // 学院管理员用户信息查询（关联学院下所有专业类别）
+    //学院管理员用户信息（关联major_category的college_id，空值处理）
     @Query("""
-           select t1.id,
+           select t1.id, 
                   t1.name, 
-                  t2.name as coll_name, 
-                  JSON_ARRAYAGG(distinct t3.name) as categories
+                  ifnull(t2.name, '') as college_name, 
+                  ifnull(JSON_ARRAYAGG(distinct t3.name), JSON_ARRAY()) as categories
            from user t1
            left join college t2 on t1.college_id = t2.id
-           left join major_category t3 on t2.id = t3.college_id
+           left join major_category t3 on t3.college_id = t2.id
            where t1.id=:id
-           group by t1.id, t2.name;
+           group by t1.id, t1.name, t2.name;
            """)
-    UserInfoDTO findCollegeAdminUserInfo(@Param("id") long id);
+    Optional<UserInfoDTO> findCollegeAdminUserInfo(@Param("id") long id);
 
-    // 导员信息查询（关联负责的专业类别）
+    //辅导员用户信息（distinct去重，空值返回空数组）
     @Query("""
             select t1.id, 
                    t1.name, 
-                   t2.name as coll_name, 
-                   JSON_ARRAYAGG(distinct t3.name) as categories
+                   ifnull(t2.name, '') as college_name, 
+                   ifnull(JSON_ARRAYAGG(distinct t3.name), JSON_ARRAY()) as categories
             from user t1
             left join college t2 on t1.college_id = t2.id
-            left join counselor_info t4 on t1.id = t4.user_id
-            left join major_category t3 on t4.major_category_id = t3.id
+            left join user_category t4 on t4.user_id = t1.id
+            left join major_category t3 on t3.id = t4.major_category_id
             where t1.id=:id
-            group by t1.id, t2.name;
+            group by t1.id, t1.name, t2.name;
             """)
-    UserInfoDTO findConselorUserInfo(@Param("id") long id);
+    Optional<UserInfoDTO> findCounselorUserInfo(@Param("id") long id);
 
-    // 学生用户信息查询（关联所属专业+专业类别）
+    //学生用户信息（关联major_category，distinct去重）
     @Query("""
             select t1.id, 
                    t1.name, 
-                   t2.name as coll_name, 
-                   JSON_ARRAYAGG(distinct t3.name) as categories, 
-                   t4.name as major_name
+                   ifnull(t2.name, '') as college_name, 
+                   ifnull(JSON_ARRAYAGG(distinct t3.name), JSON_ARRAY()) as categories, 
+                   ifnull(t4.name, '') as major_name
             from user t1
             left join college t2 on t1.college_id = t2.id
-            left join student_info t5 on t1.id = t5.user_id
-            left join major t4 on t5.major_id = t4.id
-            left join major_category t3 on t4.major_category_id = t3.id
+            left join major_category t3 on t3.id = t1.major_category_id
+            left join major t4 on t4.id = t1.major_id
             where t1.id=:id
-            group by t1.id, t2.name, t4.name;
+            group by t1.id, t1.name, t2.name, t4.name;
             """)
-    UserInfoDTO findStudentUserInfo(@Param("id") long id);
-//===================================================================
-    // 更新用户密码（按用户ID）
+    Optional<UserInfoDTO> findStudentUserInfo(@Param("id") long id);
+
+    //修改密码（按用户ID）
     @Modifying
     @Query("""
             update user u set u.password=:password where u.id=:uid;
             """)
-    void updatePassword(@Param("uid") long uid, @Param("password") String password);
+    int updatePassword(@Param("uid") long uid, @Param("password") String password);
 
-    // 更新用户密码（按学院ID+账号）
+    //修改密码（按学院ID+账号）
     @Modifying
     @Query("""
-            update user u set u.password=:password where u.college_id=:collid and u.account=:account;
+            update user u set u.password=:password where u.college_id=:cid and u.account=:account;
             """)
-    Integer updatePassword(@Param("collid") long collid,
-                           @Param("account") String account,
-                           @Param("password") String password);
+    int updatePassword(@Param("cid") long cid,
+                       @Param("account") String account,
+                       @Param("password") String password);
 
-    // 查询用户文件目录名（姓名-账号）
+    //查询文件目录名（空值处理，避免返回null）
     @Query("""
-            select concat_ws('-', u.name, u.account) from user u where u.id=:uid;
+            select concat_ws('-', ifnull(u.name, ''), ifnull(u.account, '')) 
+            from user u where u.id=:uid;
             """)
-    String findFileDirectoryName(@Param("uid") long uid);
+    Optional<String> findFileDirectoryName(@Param("uid") long uid);
 
-    // 按专业ID查询用户（学生）
-    @Query("""
-            select u.* from user u
-            left join student_info si on u.id = si.user_id
-            where si.major_id=:majorid;
-            """)
-    List<User> findByMajorId(@Param("majorid") long majorid);
+    //按专业ID查询用户
+    List<User> findByMajorId(@Param("mid") long mid);
 }
