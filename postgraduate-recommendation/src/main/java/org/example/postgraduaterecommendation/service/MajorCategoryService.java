@@ -68,23 +68,38 @@ public class MajorCategoryService {
                 .collect(Collectors.toList());
     }
 
-    public List<CollegeDTO> listCollegesAndMajors() {
-        List<?> colleges = collegeRepository.findAll();
+//    public List<CollegeDTO> listCollegesAndMajors() {
+//        List<?> colleges = collegeRepository.findAll();
+//
+//        return ((List<?>) colleges).stream()
+//                .map(college -> {
+//                    // 强制类型转换
+//                    org.example.postgraduaterecommendation.dox.College collegeObj =
+//                            (org.example.postgraduaterecommendation.dox.College) college;
+//                    List<Major> majors = majorRepository.findByCollegeId(collegeObj.getId());
+//
+//                    return CollegeDTO.builder()
+//                            .college(collegeObj)
+//                            .majors(majors)
+//                            .build();
+//                })
+//                .collect(Collectors.toList());
+//    }
+public List<CollegeDTO> listCollegesAndMajors() {
+    List<?> colleges = collegeRepository.findAll(); // 注意这里返回的是 raw type
 
-        return ((List<?>) colleges).stream()
-                .map(college -> {
-                    // 强制类型转换
-                    org.example.postgraduaterecommendation.dox.College collegeObj =
-                            (org.example.postgraduaterecommendation.dox.College) college;
-                    List<Major> majors = majorRepository.findByCollegeId(collegeObj.getId());
-
-                    return CollegeDTO.builder()
-                            .college(collegeObj)
-                            .majors(majors)
-                            .build();
-                })
-                .collect(Collectors.toList());
-    }
+    return ((List<?>) colleges).stream()
+            .map(college -> {
+                org.example.postgraduaterecommendation.dox.College collegeObj =
+                        (org.example.postgraduaterecommendation.dox.College) college;
+                List<Major> majors = majorRepository.findByCollegeId(collegeObj.getId());
+                return CollegeDTO.builder()
+                        .college(collegeObj)
+                        .majors(majors)
+                        .build();
+            })
+            .collect(Collectors.toList());
+}
 
     @CacheEvict(value = {"majorCategory", "majors"}, allEntries = true)
     @Transactional(rollbackFor = Exception.class)

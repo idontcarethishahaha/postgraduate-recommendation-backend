@@ -65,7 +65,8 @@ public class RegisterController {
     // 查看所有学院
     @GetMapping("open/colleges")
     public ResultVO getColleges() {
-        Object collegesAndMajors = majorCategoryService.listCollegesAndMajors();        return ResultVO.success(collegesAndMajors);
+        Object collegesAndMajors = majorCategoryService.listCollegesAndMajors();
+        return ResultVO.success(collegesAndMajors);
     }
 }
 
