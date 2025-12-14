@@ -27,7 +27,7 @@ public class MajorCategory {
     private Long id;
     private String name;
     private Long collegeId;
-    private String calculationRule; //在数据库中是json
+    private String weighting; //在数据库中是json
     private LocalDateTime deadlineTime;
 
     @ReadOnlyProperty

@@ -79,6 +79,8 @@ public class CollegeController {
         return ResultVO.success();
     }
 
+
+
     //重置密码
     @PutMapping("passwords/{account}")
     public ResultVO putPassword(@PathVariable String account,

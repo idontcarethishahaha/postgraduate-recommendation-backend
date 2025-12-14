@@ -57,3 +57,7 @@ VALUES
 (3016, '机械设计制造及其自动化', 1005, 2007),
 (3017, '机械电子工程', 1005, 2007),
 (3018, '工业设计', 1005, 2007);
+
+-- 手动插入测试（不指定id和create_time）
+INSERT INTO weighted_score (score, ranking, verified, logs)
+VALUES (78.0, 6, 0, null);

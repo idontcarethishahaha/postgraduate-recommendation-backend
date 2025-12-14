@@ -78,6 +78,7 @@ create table if not exists `weighted_score`/*加权得分*/
     score       decimal(6, 3)    not null check ( score > 0 and score <= 100.00),
     ranking     tinyint unsigned not null,/*排名*/
     verified    tinyint unsigned not null default 0,/*是否已审核认定*/
+    logs varchar(500) null,
 
     create_time datetime         not null default current_timestamp,
     update_time datetime         not null default current_timestamp on update current_timestamp

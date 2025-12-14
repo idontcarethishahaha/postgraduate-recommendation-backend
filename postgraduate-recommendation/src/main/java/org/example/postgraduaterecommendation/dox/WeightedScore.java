@@ -1,6 +1,7 @@
 package org.example.postgraduaterecommendation.dox;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,7 +27,6 @@ public class WeightedScore implements Persistable<Long> {
     public static final int UNVERIFIED = 0;
 
     @Id
-    @CreatedBy
     private Long id;
     private Float score;
     private Integer ranking;
@@ -46,7 +46,4 @@ public class WeightedScore implements Persistable<Long> {
     public boolean isNew() {
         return isNew;
     }
-
-    @ReadOnlyProperty
-    private LocalDateTime createTime;
 }

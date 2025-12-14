@@ -27,8 +27,8 @@ public class Major {
     private Long collegeId;
     private Long majorCategoryId;
 
-    @ReadOnlyProperty
-    private LocalDateTime createTime;
-    @ReadOnlyProperty
-    private LocalDateTime updateTime;
+//    @ReadOnlyProperty
+//    private LocalDateTime createTime;
+//    @ReadOnlyProperty
+//    private LocalDateTime updateTime;
 }

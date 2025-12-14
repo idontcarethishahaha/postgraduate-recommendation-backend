@@ -16,7 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class StudentInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(User.COUNSELOR.equals(request.getAttribute(TokenAttribute.ROLE))) {
+        if(User.STUDENT.equals(request.getAttribute(TokenAttribute.ROLE))) {
             return true;
         }
         throw XException
