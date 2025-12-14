@@ -105,5 +105,15 @@ public class AdminController {
                     .build();
         }
     }
+    // 根据id查询单个学院
+    @GetMapping("open/colleges/{collegeId}")
+    public ResultVO getCollegeById(@PathVariable Long collegeId) {
+        College college = collegeService.getCollegeById(collegeId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", college.getId().toString());
+        result.put("name", college.getName());
+
+        return ResultVO.success(result);
+    }
 }
 

@@ -90,7 +90,7 @@ public class UserService {
 //                .build();
 //        userCategoryRepository.save(userCategory);
 //    }
-    @Transactional(rollbackFor = Exception.class) // 关键：指定异常回滚，确保失败时全回滚
+    @Transactional(rollbackFor = Exception.class)
     public void addStudent(RegisterUserDTO registerUser) {
         if (registerUser.getMajorCategoryId() == null) {
             throw new IllegalArgumentException("专业类别ID（majorCategoryId）不能为空");
@@ -111,6 +111,7 @@ public class UserService {
                 .build();
         userCategoryRepository.save(userCategory);
     }
+
 
     //重置密码
     @Transactional

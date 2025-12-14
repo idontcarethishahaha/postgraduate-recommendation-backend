@@ -26,7 +26,7 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/college/")
+@RequestMapping("/api/college")
 public class CollegeController {
     private final MajorCategoryService majorCategoryService;
     private final UserService userService;
@@ -95,14 +95,5 @@ public class CollegeController {
         return ResultVO.success();
     }
 
-    // 根据id查询单个学院
-    @GetMapping("open/colleges/{collegeId}")
-    public ResultVO getCollegeById(@PathVariable Long collegeId) {
-        College college = collegeService.getCollegeById(collegeId);
-        Map<String, Object> result = new HashMap<>();
-        result.put("id", college.getId().toString());
-        result.put("name", college.getName());
 
-        return ResultVO.success(result);
-    }
 }

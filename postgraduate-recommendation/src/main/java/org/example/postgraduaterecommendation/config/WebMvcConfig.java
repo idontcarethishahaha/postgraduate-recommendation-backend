@@ -30,6 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api/open/register",           // 排除注册接口
                         "/api/open/register/**",        // 或者排除所有注册相关
                         "/api/open/colleges",           // 排除学院列表
+                        "/api/open/colleges1",           // 排除学院列表
                         //"/api/open/colleges/*/majors"   // 排除专业列表
                         "/api/open/colleges/**"
                 );

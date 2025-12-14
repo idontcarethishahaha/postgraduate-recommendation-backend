@@ -23,6 +23,6 @@ public class RegisterUserDTO {
     private Long majorId;
 
     private List<Long> majorCategoryIds;
-    @JsonProperty("catId")
+    //@JsonProperty("catId")
     private Long majorCategoryId;
 }
