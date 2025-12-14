@@ -3,10 +3,7 @@ package org.example.postgraduaterecommendation.controller;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.postgraduaterecommendation.dox.Item;
-import org.example.postgraduaterecommendation.dox.Major;
-import org.example.postgraduaterecommendation.dox.MajorCategory;
-import org.example.postgraduaterecommendation.dox.User;
+import org.example.postgraduaterecommendation.dox.*;
 import org.example.postgraduaterecommendation.dto.RegisterUserDTO;
 import org.example.postgraduaterecommendation.exception.Code;
 import org.example.postgraduaterecommendation.exception.XException;
@@ -17,6 +14,9 @@ import org.example.postgraduaterecommendation.service.UserService;
 import org.example.postgraduaterecommendation.vo.ResultVO;
 import org.example.postgraduaterecommendation.vo.TokenAttribute;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author wuwenjin
@@ -93,5 +93,16 @@ public class CollegeController {
                     .build();
         }
         return ResultVO.success();
+    }
+
+    // 根据id查询单个学院
+    @GetMapping("open/colleges/{collegeId}")
+    public ResultVO getCollegeById(@PathVariable Long collegeId) {
+        College college = collegeService.getCollegeById(collegeId);
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", college.getId().toString());
+        result.put("name", college.getName());
+
+        return ResultVO.success(result);
     }
 }

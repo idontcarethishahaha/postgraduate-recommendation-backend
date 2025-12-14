@@ -73,8 +73,29 @@ public class UserService {
     }
 
     //添加学生
-    @Transactional
+//    @Transactional
+//    public void addStudent(RegisterUserDTO registerUser) {
+//        User newUser = new User();
+//        BeanUtils.copyProperties(registerUser, newUser);
+//        newUser.setRole(User.STUDENT);
+//        newUser.setPassword(passwordEncoder.encode(registerUser.getAccount()));
+//
+//        // 保存用户
+//        User savedUser = userRepository.save(newUser);
+//
+//        // 保存用户-分类关联
+//        UserCategory userCategory = UserCategory.builder()
+//                .userId(savedUser.getId())
+//                .majorCategoryId(registerUser.getMajorCategoryId())
+//                .build();
+//        userCategoryRepository.save(userCategory);
+//    }
+    @Transactional(rollbackFor = Exception.class) // 关键：指定异常回滚，确保失败时全回滚
     public void addStudent(RegisterUserDTO registerUser) {
+        if (registerUser.getMajorCategoryId() == null) {
+            throw new IllegalArgumentException("专业类别ID（majorCategoryId）不能为空");
+        }
+
         User newUser = new User();
         BeanUtils.copyProperties(registerUser, newUser);
         newUser.setRole(User.STUDENT);
@@ -83,7 +104,7 @@ public class UserService {
         // 保存用户
         User savedUser = userRepository.save(newUser);
 
-        // 保存用户-分类关联
+        // 保存用户-分类关联（
         UserCategory userCategory = UserCategory.builder()
                 .userId(savedUser.getId())
                 .majorCategoryId(registerUser.getMajorCategoryId())

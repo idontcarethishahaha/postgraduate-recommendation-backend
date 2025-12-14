@@ -67,7 +67,28 @@ public class CollegeService {
         userRepository.save(user);
     }
 
+    // 移除学院管理员
+    @Transactional
+    public void removeCollegeAdmin(Long uid) {
+        // 用户是否存在
+        User user = userRepository.findById(uid)
+                .orElseThrow(() -> XException.builder()
+                        .codeNum(Code.ERROR)
+                        .message("学院管理员不存在")
+                        .build());
+        // 删除用户
+        userRepository.deleteById(uid);
+    }
+    //查看学院管理员
+    @Transactional
+    public List<User> getCollegeAdminsByCollegeId(Long cid) {
+        return userRepository.findByCollegeIdAndRole(cid, User.COLLEGE_ADMIN);
+    }
+
+
+
     //查询管理员列表
+    @Transactional
     public List<AdminResp> listAdmins(long cid, String role) {
         List<AdminDO> admins = userCategoryRepository.findByCollegeId(cid, role);
 
@@ -94,5 +115,15 @@ public class CollegeService {
                             .majorCategory(majorCategory)
                             .build();
                 }).toList();
+    }
+
+    // 根据学院id获取学院
+    @Transactional
+    public College getCollegeById(Long cid) {
+        return collegeRepository.findById(cid)
+                .orElseThrow(() -> XException.builder()
+                        .codeNum(Code.ERROR)
+                        .message("学院不存在")
+                        .build());
     }
 }

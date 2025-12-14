@@ -40,21 +40,21 @@ public class RegisterController {
         }
     }
 
-//    // 查看所有学院
-//    @GetMapping("open/colleges")
-//    public ResultVO getColleges() {
-//        List<College> colleges = collegeService.listColleges();
-//
-//        List<Map<String, Object>> result = colleges.stream()
-//                .map(college -> {
-//                    Map<String, Object> map = new HashMap<>();
-//                    map.put("id", college.getId().toString());
-//                    map.put("name", college.getName());
-//                    return map;
-//                })
-//                .collect(Collectors.toList());
-//        return ResultVO.success(result);
-//    }
+    // 查看所有学院
+    @GetMapping("open/colleges1")
+    public ResultVO getColleges1() {
+        List<College> colleges = collegeService.listColleges();
+
+        List<Map<String, Object>> result = colleges.stream()
+                .map(college -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", college.getId().toString());
+                    map.put("name", college.getName());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        return ResultVO.success(result);
+    }
 //
 //    // 根据学院获取专业（开放接口）
 //    @GetMapping("open/colleges/{cid}/majors")

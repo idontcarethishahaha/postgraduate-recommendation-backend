@@ -18,21 +18,21 @@ public interface UserRepository extends ListCrudRepository<User, Long> {
     Optional<User> findByAccount(@Param("account") String account);
 
     //通用用户信息查询（关联user_category，JSON_ARRAYAGG空值处理）
-    @Query("""
-            select t1.id, 
-                   t1.name, 
-                   ifnull(t2.name, '') as college_name,
-                   ifnull(JSON_ARRAYAGG(distinct t4.name), JSON_ARRAY()) as categories,
-                   ifnull(t5.name, '') as major_name
-            from user t1
-                     left join college t2 on t1.college_id = t2.id
-                     left join user_category t3 on t1.id = t3.user_id
-                     left join major_category t4 on t4.id = t3.major_category_id
-                     left join major t5 on t1.major_id = t5.id
-            where t1.id=:id 
-            group by t1.id, t1.name, t2.name, t5.name;
-            """)
-    Optional<UserInfoDTO> find(@Param("id") long id);
+//    @Query("""
+//            select t1.id,
+//                   t1.name,
+//                   ifnull(t2.name, '') as college_name,
+//                   ifnull(JSON_ARRAYAGG(distinct t4.name), JSON_ARRAY()) as categories,
+//                   ifnull(t5.name, '') as major_name
+//            from user t1
+//                     left join college t2 on t1.college_id = t2.id
+//                     left join user_category t3 on t1.id = t3.user_id
+//                     left join major_category t4 on t4.id = t3.major_category_id
+//                     left join major t5 on t1.major_id = t5.id
+//            where t1.id=:id
+//            group by t1.id, t1.name, t2.name, t5.name;
+//            """)
+//    Optional<UserInfoDTO> find(@Param("id") long id);
 
     //学院管理员用户信息（关联major_category的college_id，空值处理）
     @Query("""
@@ -102,6 +102,9 @@ public interface UserRepository extends ListCrudRepository<User, Long> {
             """)
     Optional<String> findFileDirectoryName(@Param("uid") long uid);
 
-    //按专业ID查询用户
-    List<User> findByMajorId(@Param("mid") long mid);
+//    //按专业ID查询用户
+//    List<User> findByMajorId(@Param("mid") long mid);
+
+    // 查找学院管理员
+    List<User> findByCollegeIdAndRole(Long collegeId, String role);
 }

@@ -1,5 +1,6 @@
 package org.example.postgraduaterecommendation.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +23,6 @@ public class RegisterUserDTO {
     private Long majorId;
 
     private List<Long> majorCategoryIds;
+    @JsonProperty("catId")
     private Long majorCategoryId;
 }
