@@ -1,0 +1,7 @@
+### 查询所有学院
+GET localhost:8080/api/open/colleges
+token: {{token}}
+
+### 查询101 id 对应的学院
+GET localhost:8080/api/open/colleges/101
+token: {{token}}

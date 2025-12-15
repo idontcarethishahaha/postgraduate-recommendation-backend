@@ -3,7 +3,7 @@ package org.example.postgraduaterecommendation.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.postgraduaterecommendation.dox.*;
-import org.example.postgraduaterecommendation.dto.ComfirmWeightedScoreReq;
+import org.example.postgraduaterecommendation.dto.ConfirmWeightedScoreReq;
 import org.example.postgraduaterecommendation.dto.StudentItemReq;
 import org.example.postgraduaterecommendation.service.*;
 import org.example.postgraduaterecommendation.vo.ResultVO;
@@ -90,7 +90,7 @@ public class MajorCategoryController {
     //提交学生加权分
     @PostMapping("students/{sid}/weightedscore")
     public ResultVO postWeightedScore(
-            @RequestBody ComfirmWeightedScoreReq req,
+            @RequestBody ConfirmWeightedScoreReq req,
             @PathVariable long sid,
             @RequestAttribute(TokenAttribute.UID) long uid) {
         req.getLog().setUserId(uid);

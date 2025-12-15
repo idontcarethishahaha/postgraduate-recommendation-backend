@@ -1,0 +1,15 @@
+### 注册页面  用浏览器打开
+http://localhost:8080/register.html
+
+### 学生登录
+POST localhost:8080/api/open/login
+Content-Type: application/json
+
+{
+  "account": "2023221557",
+  "password": "123456"
+}
+
+> {%
+    client.global.set("student_token", response.headers.valueOf("token"));
+%}

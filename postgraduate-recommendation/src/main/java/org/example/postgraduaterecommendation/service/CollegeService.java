@@ -1,18 +1,12 @@
 package org.example.postgraduaterecommendation.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.postgraduaterecommendation.dox.College;
-import org.example.postgraduaterecommendation.dox.Major;
-import org.example.postgraduaterecommendation.dox.MajorCategory;
-import org.example.postgraduaterecommendation.dox.User;
+import org.example.postgraduaterecommendation.dox.*;
 import org.example.postgraduaterecommendation.dto.AdminDO;
 import org.example.postgraduaterecommendation.dto.AdminResp;
 import org.example.postgraduaterecommendation.exception.Code;
 import org.example.postgraduaterecommendation.exception.XException;
-import org.example.postgraduaterecommendation.repository.CollegeRepository;
-import org.example.postgraduaterecommendation.repository.MajorRepository;
-import org.example.postgraduaterecommendation.repository.UserCategoryRepository;
-import org.example.postgraduaterecommendation.repository.UserRepository;
+import org.example.postgraduaterecommendation.repository.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +22,7 @@ public class CollegeService {
     private final CollegeRepository collegeRepository;
     private final UserRepository userRepository;
     private final MajorRepository majorRepository;
+    private final MajorCategoryRepository majorCategoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserCategoryRepository userCategoryRepository;
 
@@ -89,11 +84,61 @@ public class CollegeService {
 
 
     //查询管理员列表
-    @Transactional
+//    @Transactional
+//    public List<AdminResp> listAdmins(long cid, String role) {
+//        List<AdminDO> admins = userCategoryRepository.findByCollegeId(cid, role);
+//
+//        // 按 majorCategoryId分组
+//        Map<Long, List<AdminDO>> groupByCatId = admins.stream()
+//                .collect(Collectors.groupingBy(AdminDO::getMajorCategoryId));
+//
+//        // 转换为AdminResp列表
+//        return groupByCatId.values().stream()
+//                .map(adminDOS -> {
+//                    AdminDO first = adminDOS.getFirst();
+//                    MajorCategory majorCategory = MajorCategory.builder()
+//                            .id(first.getMajorCategoryId())
+//                            .name(first.getMajorCategoryName())
+//                            .build();
+//                    List<User> list = adminDOS.stream()
+//                            .map(adminDO -> User.builder()
+//                                    .id(adminDO.getUserId())
+//                                    .name(adminDO.getUserName())
+//                                    .build())
+//                            .toList();
+//                    return AdminResp.builder()
+//                            .users(list)
+//                            .majorCategory(majorCategory)
+//                            .build();
+//                }).toList();
+//    }
+    @Transactional(readOnly = true)
     public List<AdminResp> listAdmins(long cid, String role) {
-        List<AdminDO> admins = userCategoryRepository.findByCollegeId(cid, role);
+        List<UserCategory> userCategories = userCategoryRepository.findByCollegeId(cid);
 
-        // 按 majorCategoryId分组
+        List<AdminDO> admins = userCategories.stream()
+                .filter(userCategory -> {
+                    // 根据用户ID查询用户，判断角色是否匹配
+                    User user = userRepository.findById(userCategory.getUserId()).orElse(null);
+                    return user != null && role.equals(user.getRole());
+                })
+                .map(userCategory -> {
+                    // 查询专业类别名称（关联major_category表）
+                    MajorCategory majorCategory = majorCategoryRepository.findById(userCategory.getMajorCategoryId()).orElse(null);
+                    // 查询用户名称
+                    User user = userRepository.findById(userCategory.getUserId()).orElse(null);
+
+                    // 组装AdminDO
+                    return AdminDO.builder()
+                            .majorCategoryId(userCategory.getMajorCategoryId())
+                            .majorCategoryName(majorCategory != null ? majorCategory.getName() : "")
+                            .userId(userCategory.getUserId())
+                            .userName(user != null ? user.getName() : "")
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        // 按majorCategoryId分组
         Map<Long, List<AdminDO>> groupByCatId = admins.stream()
                 .collect(Collectors.groupingBy(AdminDO::getMajorCategoryId));
 

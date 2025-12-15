@@ -8,13 +8,15 @@ import lombok.NoArgsConstructor;
 /**
  * @author wuwenjin
  */
+// 添加辅导员用
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class AdminDO {
-    private String majorCategoryName;
-    private String userName;
+@AllArgsConstructor
+public class CounselorDTO {
+    private String account;
+    private String name;
+    private String tel;
+    private Long collegeId;
     private Long majorCategoryId;
-    private Long userId;
 }

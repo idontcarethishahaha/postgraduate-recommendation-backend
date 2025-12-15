@@ -22,7 +22,7 @@ public class RegisterUserDTO {
     private Long collegeId;
     private Long majorId;
 
-    private List<Long> majorCategoryIds;
+    //private List<Long> majorCategoryIds;
     //@JsonProperty("catId")
     private Long majorCategoryId;
 }

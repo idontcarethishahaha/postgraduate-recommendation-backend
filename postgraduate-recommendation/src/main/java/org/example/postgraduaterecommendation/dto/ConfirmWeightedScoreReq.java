@@ -14,7 +14,7 @@ import org.example.postgraduaterecommendation.dox.WeightedScoreLog;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ComfirmWeightedScoreReq {
+public class ConfirmWeightedScoreReq {
     private WeightedScore weightedScore;
     private WeightedScoreLog log;
 }

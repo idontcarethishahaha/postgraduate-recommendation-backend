@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.postgraduaterecommendation.dox.User;
 import org.example.postgraduaterecommendation.dox.UserCategory;
+import org.example.postgraduaterecommendation.dto.CounselorDTO;
 import org.example.postgraduaterecommendation.dto.RegisterUserDTO;
 import org.example.postgraduaterecommendation.dto.UserInfoDTO;
 import org.example.postgraduaterecommendation.repository.UserCategoryRepository;
@@ -51,27 +52,70 @@ public class UserService {
     }
 
     //添加辅导员
+//    @Transactional
+//    public void addCounselor(RegisterUserDTO registerUser) {
+//        User newUser = new User();
+//        BeanUtils.copyProperties(registerUser, newUser);
+//        newUser.setRole(User.COUNSELOR);
+//        newUser.setPassword(passwordEncoder.encode(registerUser.getAccount()));
+//
+//        // 保存用户
+//        User savedUser = userRepository.save(newUser);
+//
+//        // 遍历分类ID，批量保存用户-分类关联
+//        List<Long> majorCategoryIds = registerUser.getMajorCategoryIds();
+//        for (Long majorCategoryId : majorCategoryIds) {
+//            UserCategory userCategory = UserCategory.builder()
+//                    .userId(savedUser.getId())
+//                    .majorCategoryId(majorCategoryId)
+//                    .build();
+//            userCategoryRepository.save(userCategory);
+//        }
+//    }
+    //添加辅导员，仅关联单个类别
     @Transactional
-    public void addCounselor(RegisterUserDTO registerUser) {
+    public void addCounselor(CounselorDTO newCounselor) {
+        if (newCounselor.getMajorCategoryId() == null) {
+            throw new IllegalArgumentException("专业类别ID（majorCategoryId）不能为空");
+        }
+
         User newUser = new User();
-        BeanUtils.copyProperties(registerUser, newUser);
+        BeanUtils.copyProperties(newCounselor, newUser);
         newUser.setRole(User.COUNSELOR);
-        newUser.setPassword(passwordEncoder.encode(registerUser.getAccount()));
+        newUser.setPassword(passwordEncoder.encode(newCounselor.getAccount()));
 
         // 保存用户
         User savedUser = userRepository.save(newUser);
 
-        // 遍历分类ID，批量保存用户-分类关联
-        List<Long> majorCategoryIds = registerUser.getMajorCategoryIds();
-        for (Long majorCategoryId : majorCategoryIds) {
-            UserCategory userCategory = UserCategory.builder()
-                    .userId(savedUser.getId())
-                    .majorCategoryId(majorCategoryId)
-                    .build();
-            userCategoryRepository.save(userCategory);
-        }
+        // 保存单个用户-分类关联
+        UserCategory userCategory = UserCategory.builder()
+                .userId(savedUser.getId())
+                .majorCategoryId(newCounselor.getMajorCategoryId())
+                .build();
+        userCategoryRepository.save(userCategory);
     }
-
+//        @Transactional
+//    public void addCounselor(RegisterUserDTO newCounselor) {
+//        if (newCounselor.getMajorCategoryId() == null) {
+//            throw new IllegalArgumentException("专业类别ID（majorCategoryId）不能为空");
+//        }
+//
+//        User newUser = new User();
+//        BeanUtils.copyProperties(newCounselor, newUser);
+//        newUser.setRole(User.COUNSELOR);
+//        newUser.setPassword(passwordEncoder.encode(newCounselor.getAccount()));
+//
+//        // 保存用户
+//        User savedUser = userRepository.save(newUser);
+//
+//        // 保存单个用户-分类关联
+//        UserCategory userCategory = UserCategory.builder()
+//                .userId(savedUser.getId())
+//                .majorCategoryId(newCounselor.getMajorCategoryId())
+//                .build();
+//        userCategoryRepository.save(userCategory);
+//    }
+//=========================================================
     //添加学生
     @Transactional(rollbackFor = Exception.class)
     public void addStudent(RegisterUserDTO registerUser) {

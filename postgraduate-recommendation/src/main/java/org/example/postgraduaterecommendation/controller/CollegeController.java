@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.postgraduaterecommendation.dox.*;
+import org.example.postgraduaterecommendation.dto.CounselorDTO;
 import org.example.postgraduaterecommendation.dto.RegisterUserDTO;
 import org.example.postgraduaterecommendation.exception.Code;
 import org.example.postgraduaterecommendation.exception.XException;
@@ -40,11 +41,18 @@ public class CollegeController {
     }
 
     //添加辅导员
+//    @PostMapping("users")
+//    public ResultVO postCategoryAdmin(@RequestBody RegisterUserDTO registerUser,
+//                                      @RequestAttribute(TokenAttribute.CID) long cid) {
+//        registerUser.setCollegeId(cid);
+//        userService.addCounselor(registerUser);
+//        return ResultVO.success();
+//    }
     @PostMapping("users")
-    public ResultVO postCategoryAdmin(@RequestBody RegisterUserDTO registerUser,
+    public ResultVO postCounselors(@RequestBody CounselorDTO counselorDTO,
                                       @RequestAttribute(TokenAttribute.CID) long cid) {
-        registerUser.setCollegeId(cid);
-        userService.addCounselor(registerUser);
+        counselorDTO.setCollegeId(cid);
+        userService.addCounselor(counselorDTO);
         return ResultVO.success();
     }
 

@@ -1,0 +1,56 @@
+### 超级管理员登录
+POST localhost:8080/api/open/login
+Content-Type: application/json
+
+{
+  "account": "admin",
+  "password": "admin"
+}
+
+> {% client.global.set("token", response.headers.valueOf("token")); %}
+
+
+### 添加学院
+POST localhost:8080/api/admin/colleges
+Content-Type: application/json
+token: {{token}}
+
+{
+  "name": "林学院"
+}
+
+### 9. 删除学院  最后面的一串数是学院id
+DELETE localhost:8080/api/admin/colleges/1423592432023429120
+token: {{token}}
+
+### 创建一个学院级管理员  101是学院id
+POST localhost:8080/api/admin/colleges/101/collegeadmins
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "小吴",
+  "account": "2023221547",
+  "tel": "17720687220"
+}
+
+### 创建一个学院级管理员  101是学院id
+POST localhost:8080/api/admin/colleges/101/collegeadmins
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "小李",
+  "account": "2023221544",
+  "tel": "17756430998"
+}
+
+
+### 管理员重置密码  重置账号为 2023221547
+PUT localhost:8080/api/admin/users/2023221547/password
+token: {{token}}
+Content-Type: application/json
+
+### 在浏览器打开
+http://localhost:8080/login.html
+
