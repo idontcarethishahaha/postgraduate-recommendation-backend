@@ -46,6 +46,7 @@ public class CollegeService {
     public List<Major> listMajorsByCollegeId(Long cid) {
         return majorRepository.findByCollegeId(cid);
     }
+
     // 删除学院
     @Transactional
     public void removeCollege(Long cid) {

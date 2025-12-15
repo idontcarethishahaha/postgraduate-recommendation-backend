@@ -73,23 +73,6 @@ public class UserService {
     }
 
     //添加学生
-//    @Transactional
-//    public void addStudent(RegisterUserDTO registerUser) {
-//        User newUser = new User();
-//        BeanUtils.copyProperties(registerUser, newUser);
-//        newUser.setRole(User.STUDENT);
-//        newUser.setPassword(passwordEncoder.encode(registerUser.getAccount()));
-//
-//        // 保存用户
-//        User savedUser = userRepository.save(newUser);
-//
-//        // 保存用户-分类关联
-//        UserCategory userCategory = UserCategory.builder()
-//                .userId(savedUser.getId())
-//                .majorCategoryId(registerUser.getMajorCategoryId())
-//                .build();
-//        userCategoryRepository.save(userCategory);
-//    }
     @Transactional(rollbackFor = Exception.class)
     public void addStudent(RegisterUserDTO registerUser) {
         if (registerUser.getMajorCategoryId() == null) {
@@ -104,7 +87,7 @@ public class UserService {
         // 保存用户
         User savedUser = userRepository.save(newUser);
 
-        // 保存用户-分类关联（
+        // 保存用户-分类关联
         UserCategory userCategory = UserCategory.builder()
                 .userId(savedUser.getId())
                 .majorCategoryId(registerUser.getMajorCategoryId())
@@ -119,5 +102,6 @@ public class UserService {
         // 返回受影响行数
         return userRepository.updatePassword(cid, account, passwordEncoder.encode(account));
     }
+
 
 }

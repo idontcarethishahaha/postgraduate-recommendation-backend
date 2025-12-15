@@ -54,7 +54,7 @@ public class MajorCategoryController {
     public ResultVO getMajors(@PathVariable long mcid,
                               @RequestAttribute(TokenAttribute.UID) long uid) {
         // 同步校验权限（校验失败抛异常），顺序执行查询逻辑
-        majorCategoryService.checkInMajorCateory(uid, mcid);
+        majorCategoryService.checkInMajorCategory(uid, mcid);
         return ResultVO.success(majorCategoryService.listMajors(mcid));
     }
 

@@ -48,12 +48,12 @@ public class CollegeController {
         return ResultVO.success();
     }
 
-    //获取全部类别及专业
+    //类别管理页面使用，获取类别及专业
     @GetMapping("categories/majors")
     public ResultVO getCategoriesAll(@RequestAttribute(TokenAttribute.CID) long cid) {
         return ResultVO.success(majorCategoryService.listMajorCategoryDTOs(cid));
     }
-
+//=================================================
     //添加类别
     @PostMapping("categories")
     public ResultVO addCategory(@RequestBody MajorCategory majorCategory,
@@ -63,15 +63,40 @@ public class CollegeController {
         return ResultVO.success();
     }
 
+    //移除类别
+    @DeleteMapping("categories/{mcid}")
+    public ResultVO removeCategory(@PathVariable long mcid){
+        try{
+            majorCategoryService.removeMajorCategory(mcid);
+            return ResultVO.success();
+        }catch (Exception e){
+            throw XException.builder()
+                    .codeNum(Code.ERROR)
+                    .message("删除类别失败")
+                    .build();
+        }
+    }
+//==================================================
     //添加专业
     @PostMapping("majors")
     public ResultVO addMajor(@RequestBody Major major,
                              @RequestAttribute(TokenAttribute.CID) long cid) {
+        // 把从Token拿到的cid赋值给major的collegeId
+        major.setCollegeId(cid);
         majorCategoryService.addMajor(major);
         return ResultVO.success();
     }
 
-    //添加指标项
+    //移除专业
+    @DeleteMapping("majors/{mid}")
+    public ResultVO removeMajor(@PathVariable long mid){
+        majorCategoryService.removeMajor(mid);
+        return ResultVO.success();
+    }
+
+
+//================================================
+    //添加指标项，目前有问题
     @PostMapping("items")
     public ResultVO addItem(@RequestBody Item item,
                             @RequestAttribute(TokenAttribute.CID) long cid) {

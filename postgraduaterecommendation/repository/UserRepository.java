@@ -100,6 +100,13 @@ public interface UserRepository extends ListCrudRepository<User, Long> {
             """)
     int updatePassword(@Param("uid") long uid, @Param("password") String password);
 
+//    // 管理员修改密码（按用户ID）
+//    @Modifying
+//    @Query("""
+//            update user u set u.password=:password where u.id=:uid;
+//            """)
+//    int adminUpdatePassword(@Param("uid") long uid, @Param("password") String password);
+
     // 修改密码（按学院ID+账号）
     @Modifying
     @Query("""

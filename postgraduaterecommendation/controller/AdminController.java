@@ -8,6 +8,7 @@ import org.example.postgraduaterecommendation.exception.Code;
 import org.example.postgraduaterecommendation.exception.XException;
 import org.example.postgraduaterecommendation.service.CollegeService;
 import org.example.postgraduaterecommendation.vo.ResultVO;
+import org.example.postgraduaterecommendation.vo.TokenAttribute;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -115,5 +116,19 @@ public class AdminController {
 
         return ResultVO.success(result);
     }
+//    //重置密码
+//    @PutMapping("passwords/{account}")
+//    public ResultVO putPassword(@PathVariable String account) {
+//        // 调用重置密码，返回受影响行数
+//        Integer affectedRows = userService.adminResetPassword(account);
+//
+//        if (affectedRows == null || affectedRows <= 0) {
+//            throw XException.builder()
+//                    .codeNum(Code.ERROR)
+//                    .message("错误，账号: " + account + "，不存在")
+//                    .build();
+//        }
+//        return ResultVO.success();
+//    }
 }
 
