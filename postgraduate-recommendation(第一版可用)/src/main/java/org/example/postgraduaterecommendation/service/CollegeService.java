@@ -11,8 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -82,63 +81,13 @@ public class CollegeService {
     }
 
 
-
+//1
     //查询管理员列表
-//    @Transactional
-//    public List<AdminResp> listAdmins(long cid, String role) {
-//        List<AdminDO> admins = userCategoryRepository.findByCollegeId(cid, role);
-//
-//        // 按 majorCategoryId分组
-//        Map<Long, List<AdminDO>> groupByCatId = admins.stream()
-//                .collect(Collectors.groupingBy(AdminDO::getMajorCategoryId));
-//
-//        // 转换为AdminResp列表
-//        return groupByCatId.values().stream()
-//                .map(adminDOS -> {
-//                    AdminDO first = adminDOS.getFirst();
-//                    MajorCategory majorCategory = MajorCategory.builder()
-//                            .id(first.getMajorCategoryId())
-//                            .name(first.getMajorCategoryName())
-//                            .build();
-//                    List<User> list = adminDOS.stream()
-//                            .map(adminDO -> User.builder()
-//                                    .id(adminDO.getUserId())
-//                                    .name(adminDO.getUserName())
-//                                    .build())
-//                            .toList();
-//                    return AdminResp.builder()
-//                            .users(list)
-//                            .majorCategory(majorCategory)
-//                            .build();
-//                }).toList();
-//    }
-    @Transactional(readOnly = true)
+    @Transactional
     public List<AdminResp> listAdmins(long cid, String role) {
-        List<UserCategory> userCategories = userCategoryRepository.findByCollegeId(cid);
+        List<AdminDO> admins = userCategoryRepository.findByCollegeId(cid, role);
 
-        List<AdminDO> admins = userCategories.stream()
-                .filter(userCategory -> {
-                    // 根据用户ID查询用户，判断角色是否匹配
-                    User user = userRepository.findById(userCategory.getUserId()).orElse(null);
-                    return user != null && role.equals(user.getRole());
-                })
-                .map(userCategory -> {
-                    // 查询专业类别名称（关联major_category表）
-                    MajorCategory majorCategory = majorCategoryRepository.findById(userCategory.getMajorCategoryId()).orElse(null);
-                    // 查询用户名称
-                    User user = userRepository.findById(userCategory.getUserId()).orElse(null);
-
-                    // 组装AdminDO
-                    return AdminDO.builder()
-                            .majorCategoryId(userCategory.getMajorCategoryId())
-                            .majorCategoryName(majorCategory != null ? majorCategory.getName() : "")
-                            .userId(userCategory.getUserId())
-                            .userName(user != null ? user.getName() : "")
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        // 按majorCategoryId分组
+        // 按 majorCategoryId分组
         Map<Long, List<AdminDO>> groupByCatId = admins.stream()
                 .collect(Collectors.groupingBy(AdminDO::getMajorCategoryId));
 
@@ -162,6 +111,59 @@ public class CollegeService {
                             .build();
                 }).toList();
     }
+    //2
+//    @Transactional(readOnly = true)
+//    public List<AdminResp> listAdmins(long cid, String role) {
+//        List<UserCategory> userCategories = userCategoryRepository.findByCollegeId(cid);
+//
+//        List<AdminDO> admins = userCategories.stream()
+//                .filter(userCategory -> {
+//                    // 根据用户ID查询用户，判断角色是否匹配
+//                    User user = userRepository.findById(userCategory.getUserId()).orElse(null);
+//                    return user != null && role.equals(user.getRole());
+//                })
+//                .map(userCategory -> {
+//                    // 查询专业类别名称（关联major_category表）
+//                    MajorCategory majorCategory = majorCategoryRepository.findById(userCategory.getMajorCategoryId()).orElse(null);
+//                    // 查询用户名称
+//                    User user = userRepository.findById(userCategory.getUserId()).orElse(null);
+//
+//                    // 组装AdminDO
+//                    return AdminDO.builder()
+//                            .majorCategoryId(userCategory.getMajorCategoryId())
+//                            .majorCategoryName(majorCategory != null ? majorCategory.getName() : "")
+//                            .userId(userCategory.getUserId())
+//                            .userName(user != null ? user.getName() : "")
+//                            .build();
+//                })
+//                .collect(Collectors.toList());
+//
+//        // 按majorCategoryId分组
+//        Map<Long, List<AdminDO>> groupByCatId = admins.stream()
+//                .collect(Collectors.groupingBy(AdminDO::getMajorCategoryId));
+//
+//        // 转换为AdminResp列表
+//        return groupByCatId.values().stream()
+//                .map(adminDOS -> {
+//                    AdminDO first = adminDOS.getFirst();
+//                    MajorCategory majorCategory = MajorCategory.builder()
+//                            .id(first.getMajorCategoryId())
+//                            .name(first.getMajorCategoryName())
+//                            .build();
+//                    List<User> list = adminDOS.stream()
+//                            .map(adminDO -> User.builder()
+//                                    .id(adminDO.getUserId())
+//                                    .name(adminDO.getUserName())
+//                                    .build())
+//                            .toList();
+//                    return AdminResp.builder()
+//                            .users(list)
+//                            .majorCategory(majorCategory)
+//                            .build();
+//                }).toList();
+//    }
+    //=========================================================
+
 
     // 根据学院id获取学院
     @Transactional

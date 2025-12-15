@@ -7,6 +7,8 @@ import org.example.postgraduaterecommendation.dox.UserCategory;
 import org.example.postgraduaterecommendation.dto.CounselorDTO;
 import org.example.postgraduaterecommendation.dto.RegisterUserDTO;
 import org.example.postgraduaterecommendation.dto.UserInfoDTO;
+import org.example.postgraduaterecommendation.exception.Code;
+import org.example.postgraduaterecommendation.exception.XException;
 import org.example.postgraduaterecommendation.repository.UserCategoryRepository;
 import org.example.postgraduaterecommendation.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -93,6 +95,18 @@ public class UserService {
                 .majorCategoryId(newCounselor.getMajorCategoryId())
                 .build();
         userCategoryRepository.save(userCategory);
+    }
+    // 移除辅导员
+    @Transactional
+    public void removeCounselor(Long uid) {
+        // 用户是否存在
+        User user = userRepository.findById(uid)
+                .orElseThrow(() -> XException.builder()
+                        .codeNum(Code.ERROR)
+                        .message("辅导员不存在")
+                        .build());
+        // 删除用户
+        userRepository.deleteById(uid);
     }
 //        @Transactional
 //    public void addCounselor(RegisterUserDTO newCounselor) {

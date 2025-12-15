@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.postgraduaterecommendation.dox.*;
 import org.example.postgraduaterecommendation.dto.CounselorDTO;
-import org.example.postgraduaterecommendation.dto.RegisterUserDTO;
+//import org.example.postgraduaterecommendation.dto.RegisterUserDTO;
 import org.example.postgraduaterecommendation.exception.Code;
 import org.example.postgraduaterecommendation.exception.XException;
 import org.example.postgraduaterecommendation.service.CollegeService;
@@ -56,12 +56,27 @@ public class CollegeController {
         return ResultVO.success();
     }
 
+    // 移除辅导员
+    @DeleteMapping("/users/{uid}")
+    public ResultVO removeCounselor(@PathVariable Long uid) {
+        try {
+            userService.removeCounselor(uid);
+            return ResultVO.success();
+        } catch (Exception e) {
+            throw XException.builder()
+                    .codeNum(Code.ERROR)
+                    .message("移除辅导员失败：" + e.getMessage())
+                    .build();
+        }
+    }
+
+    //==========================================
     //类别管理页面使用，获取类别及专业
     @GetMapping("categories/majors")
     public ResultVO getCategoriesAll(@RequestAttribute(TokenAttribute.CID) long cid) {
         return ResultVO.success(majorCategoryService.listMajorCategoryDTOs(cid));
     }
-//=================================================
+
     //添加类别
     @PostMapping("categories")
     public ResultVO addCategory(@RequestBody MajorCategory majorCategory,

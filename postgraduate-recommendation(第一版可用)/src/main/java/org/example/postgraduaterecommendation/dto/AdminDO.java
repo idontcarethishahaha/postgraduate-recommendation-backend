@@ -17,5 +17,4 @@ public class AdminDO {
     private String userName;
     private Long majorCategoryId;
     private Long userId;
-    //private Long account;
 }
