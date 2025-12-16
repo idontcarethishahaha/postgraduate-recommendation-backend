@@ -15,7 +15,9 @@ import java.util.Optional;
 @Repository
 public interface ItemRepository extends CrudRepository<Item, Long> {
     //根据类别ID查询顶级节点（parent_id 为 null）
-    @Query(value = "select * from item t1 where t1.major_category_id=:mcid and t1.parent_id is null")
+//    @Query(value = "select * from item t1 where t1.major_category_id=:mcid and t1.parent_id is null")
+//    List<Item> findTopByMajorCategoryId(@Param("mcid") long mcid);
+    @Query(value = "select * from item t1 where t1.major_category_id=:mcid and (t1.parent_id is null or t1.parent_id = 0)")
     List<Item> findTopByMajorCategoryId(@Param("mcid") long mcid);
 
     //递归查询指定分类下所有节点（包含子节点）
