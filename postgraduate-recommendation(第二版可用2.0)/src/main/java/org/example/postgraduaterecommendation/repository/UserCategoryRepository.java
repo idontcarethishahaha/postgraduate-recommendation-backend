@@ -20,17 +20,6 @@ public interface UserCategoryRepository extends CrudRepository<UserCategory, Lon
             """)
     Integer checkUsersInSameMajorCategory(@Param("sid") long sid, @Param("adminid") long adminid);
 
-//    @Query("""
-//            select t2.name as category_name, t2.id as major_category_id,
-//                   t3.name as user_name, t3.id as user_id
-//            from user_category t1, major_category t2, user t3
-//            where t1.major_category_id=t2.id
-//              and t1.user_id=t3.id
-//              and t2.college_id=:cid
-//              and t3.role=:role
-//            """)
-//    List<AdminDO> findByCollegeId(@Param("cid") long cid, @Param("role") String role);
-//List<UserCategory> findByCollegeId(Long collegeId);
 @Query("""
             select t2.name as category_name, t2.id as major_category_id,
                    t3.name as user_name, t3.id as user_id

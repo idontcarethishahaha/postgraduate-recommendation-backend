@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-//@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +31,6 @@ public class StudentItem {
     @CreatedBy
     private Long id;
     private Long userId;
-    //@Column(name = "root_item_id")
     private Long rootItemId;
     private Long itemId;
     private Float point;

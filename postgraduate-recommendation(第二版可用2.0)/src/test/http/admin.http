@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "account": "admin",
-  "password": "admin"
+  "password": "123456"
 }
 
 > {% client.global.set("token", response.headers.valueOf("token")); %}
@@ -52,5 +52,5 @@ token: {{token}}
 Content-Type: application/json
 
 ### 在浏览器打开
-http://localhost:8080/login.html
+###http://localhost:8080/login.html
 

@@ -107,6 +107,8 @@ public class UserService {
                         .build());
         // 删除用户
         userRepository.deleteById(uid);
+        // 关联也删
+        userCategoryRepository.deleteById(uid);
     }
 //        @Transactional
 //    public void addCounselor(RegisterUserDTO newCounselor) {

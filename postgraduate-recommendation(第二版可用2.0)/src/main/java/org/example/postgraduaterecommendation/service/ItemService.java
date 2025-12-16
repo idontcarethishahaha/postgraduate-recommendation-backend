@@ -3,6 +3,8 @@ package org.example.postgraduaterecommendation.service;
 
 import org.example.postgraduaterecommendation.dox.Item;
 import org.example.postgraduaterecommendation.dto.ItemDTO;
+import org.example.postgraduaterecommendation.exception.Code;
+import org.example.postgraduaterecommendation.exception.XException;
 import org.example.postgraduaterecommendation.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
@@ -10,6 +12,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -25,11 +28,23 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
-    //添加指标项（清空缓存）
+    //添加指标项（清缓存）
     @CacheEvict(value = "items", allEntries = true)
     @Transactional(rollbackFor = Exception.class)
     public void addItem(Item item) {
         itemRepository.save(item);
+    }
+
+    // 移除指标项
+    @Transactional
+    public void removeItem(@PathVariable long itemid) {
+        if(!itemRepository.existsById(itemid)){
+            throw XException.builder()
+                    .codeNum(Code.ERROR)
+                    .message("指标不存在")
+                    .build();
+        }
+        itemRepository.deleteById(itemid);
     }
 
     //查询顶级指标项（缓存）
@@ -38,7 +53,7 @@ public class ItemService {
         return itemRepository.findTopByMajorCategoryId(mcid);
     }
 
-    //学生端：基于类别+父指标加载封装的二级指标（缓存）
+    //学生,基于类别+父指标加载封装的二级指标（缓存）
     @Cacheable(value = "items", key = "#catid+#parentid")
     public ItemDTO listItems(long mcid, long parentid) {
         List<Item> items = itemRepository.findByMajorCategoryIdAndParentId(mcid, parentid);
@@ -83,7 +98,7 @@ public class ItemService {
                 .orElse(null);
     }
 
-    //指标项转DTO（封装全层级）
+    //指标项转DTO
     private List<ItemDTO> convertToItemDTO(List<Item> items) {
         if (items == null || items.isEmpty()) {
             return Collections.emptyList();
@@ -121,7 +136,7 @@ public class ItemService {
                 .collect(Collectors.toList());
     }
 
-    //管理员端：基于类别加载全部指标项（缓存）
+    //基于类别加载全部指标项（缓存）
     @Cacheable(value = "items", key = "#mcid")
     public List<ItemDTO> listItems(long mcid) {
         List<Item> items = itemRepository.findByMajorCategoryId(mcid);

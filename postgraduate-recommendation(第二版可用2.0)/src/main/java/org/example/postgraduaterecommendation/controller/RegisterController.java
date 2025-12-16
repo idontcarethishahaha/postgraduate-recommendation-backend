@@ -55,12 +55,7 @@ public class RegisterController {
                 .collect(Collectors.toList());
         return ResultVO.success(result);
     }
-//
-//    // 根据学院获取专业（开放接口）
-//    @GetMapping("open/colleges/{cid}/majors")
-//    public ResultVO getMajorsByCollege(@PathVariable Long cid) {
-//        return ResultVO.success(collegeService.listMajorsByCollegeId(cid));
-//    }
+
     //====================================================================
     // 查看所有学院
     @GetMapping("open/colleges")

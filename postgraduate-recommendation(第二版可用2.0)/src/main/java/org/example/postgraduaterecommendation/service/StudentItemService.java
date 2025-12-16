@@ -138,10 +138,7 @@ public class StudentItemService {
         return Path.of(pathStr.get());
     }
 
-    /**
-     * 根据文件ID查询文件路径
-     * 原 Mono<Path> → Path（同步返回）
-     */
+    //根据文件ID查询文件路径
     public Path getFilePath(long fileid) {
         Optional<StudentItemFile> stuFile = studentItemFileRepository.findById(fileid);
         if (stuFile.isEmpty()) {
@@ -153,10 +150,7 @@ public class StudentItemService {
         return Path.of(stuFile.get().getPath(), stuFile.get().getFilename());
     }
 
-    /**
-     * 删除学生指标附件
-     * 原 Mono<Void> → void（同步无返回）
-     */
+    //删除学生指标附件
     @Transactional(rollbackFor = Exception.class)
     public void removeStudentItemFile(long fileid) {
         studentItemFileRepository.deleteById(fileid);
@@ -205,7 +199,6 @@ public class StudentItemService {
     }
 
     //更新学生指标状态
-
     @Transactional(rollbackFor = Exception.class)
     public int updateStatus(long uid, String status) {
         return studentItemRepository.updateStatus(uid, status);

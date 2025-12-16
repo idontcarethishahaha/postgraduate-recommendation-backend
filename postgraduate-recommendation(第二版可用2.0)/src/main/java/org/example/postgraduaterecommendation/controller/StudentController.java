@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/api/student/")
 @RequiredArgsConstructor
-@Slf4j
 public class StudentController {
     private final ItemService itemService;
     private final WeightedScoreService weightedScoreService;

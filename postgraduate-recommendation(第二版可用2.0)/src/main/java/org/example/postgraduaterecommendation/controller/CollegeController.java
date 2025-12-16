@@ -119,7 +119,7 @@ public class CollegeController {
 
 
 //================================================
-    //添加指标项，目前有问题
+    //添加指标项
     @PostMapping("items")
     public ResultVO addItem(@RequestBody Item item,
                             @RequestAttribute(TokenAttribute.CID) long cid) {
@@ -127,8 +127,14 @@ public class CollegeController {
         return ResultVO.success();
     }
 
+    //移除指标项
+    @DeleteMapping("items/{itemid}")
+    public ResultVO removeItem(@PathVariable long itemid){
+        itemService.removeItem(itemid);
+        return ResultVO.success();
+    }
 
-
+//=======================
     //重置密码
     @PutMapping("passwords/{account}")
     public ResultVO putPassword(@PathVariable String account,

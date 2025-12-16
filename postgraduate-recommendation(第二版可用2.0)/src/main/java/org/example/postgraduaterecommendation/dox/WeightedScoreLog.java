@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "weighted_score")
+@Table(name = "weighted_score_log")
 public class WeightedScoreLog {
     @Id
     @CreatedBy
