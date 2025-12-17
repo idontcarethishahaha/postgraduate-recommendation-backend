@@ -14,6 +14,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.nio.file.Paths;
 import java.util.Comparator;
 
 import java.nio.file.Path;
@@ -149,6 +151,7 @@ public class StudentItemService {
         }
         return Path.of(stuFile.get().getPath(), stuFile.get().getFilename());
     }
+
 
     //删除学生指标附件
     @Transactional(rollbackFor = Exception.class)

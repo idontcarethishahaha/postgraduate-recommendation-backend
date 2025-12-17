@@ -14,8 +14,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 @Slf4j
 public class FileService {
-    //@Value("${my.upload}")
-    @Value("k3Tghi7")
+    @Value("${my.upload}")
     private String rootDirectory;
 
     private final StudentItemService studentItemService;
