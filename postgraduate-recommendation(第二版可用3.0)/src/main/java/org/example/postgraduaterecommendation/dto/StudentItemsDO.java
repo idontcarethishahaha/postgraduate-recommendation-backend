@@ -15,7 +15,7 @@ public class StudentItemsDO {
     private Long rootItemId;
     private Long studentItemFileId;
     private Long itemId;
-    private long itemParentId;
+    private Long itemParentId;
     private String name;
     private String comment;
     private String status;
