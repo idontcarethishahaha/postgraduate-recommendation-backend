@@ -1,0 +1,144 @@
+### 学院管理员登录
+POST localhost:8080/api/open/login
+Content-Type: application/json
+
+{
+  "account": "2023221547",
+  "password": "2023221547"
+}
+
+> {%
+    // 保存token到环境变量
+    client.global.set("token", response.headers.valueOf("token"));
+    client.global.set("cid", response.body.data.collegeId);
+    client.log("登录成功，token: " + client.global.get("token"));
+    client.log("学院ID: " + client.global.get("cid"));
+%}
+#### 所有用户都可以修改自己的密码  这个token用的是用户自己登录得到的token
+PATCH localhost:8080/api/open/user/password
+token: {{token}}
+Content-Type: application/json
+
+{
+  "password": "12345678"
+}
+
+### 测试密码是否被成功修改
+POST localhost:8080/api/open/login
+Content-Type: application/json
+
+{
+  "account": "2023221547",
+  "password": "12345678"
+}
+
+
+### 为学院添加类别  后续可以改成从token里获取学院id
+POST localhost:8080/api/collegeadmin/categories
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "信息类",
+  "calculationRule": "{\"weighted_score_ratio\": 0.8, \"comprehensive_score_ratio\": 0.2}"
+}
+
+
+###  查询自己所在学院下的所有类别  从学院管理员的token中获取学院id
+GET localhost:8080/api/collegeadmin/categories
+token: {{token}}
+Content-Type: application/json
+
+### 删除学院下的某个类别
+DELETE localhost:8080/api/collegeadmin/categories/1421397273399582720
+token: {{token}}
+
+### 修改类别
+PUT localhost:8080/api/collegeadmin/categories/1422192039766843392
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "新类别名称",
+  "calculationRule": "{\"新规则\": \"...\"}"
+}
+
+### 添加专业
+POST localhost:8080/api/collegeadmin/majors
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "计算机科学与技术",
+  "majorCategoryId": 10101
+}
+
+
+### 学院管理员查看特定类别的专业
+GET localhost:8080/api/user/majors?majorCategoryId=10101
+token: {{token}}
+
+### 查询学院所有专业
+GET localhost:8080/api/collegeadmin/majors
+token: {{token}}
+
+### 修改专业
+PUT localhost:8080/api/collegeadmin/majors/1422229491437068288
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "软件工程"
+}
+
+### 删除专业
+DELETE localhost:8080/api/collegeadmin/majors/1422229491437068288
+token: {{token}}
+
+
+
+
+### 2. 统一接口测试 - 查询专业（根据角色返回不同数据）
+### 学院管理员查看自己学院的专业
+GET localhost:8080/api/user/majors
+token: {{token}}
+
+### 3. 统一接口测试 - 查询类别（根据角色返回不同数据）
+### 学院管理员查看自己学院的类别
+GET localhost:8080/api/user/categories
+token: {{token}}
+
+### 查询学院下的所有专业（学院管理员专用）
+GET localhost:8080/api/collegeadmin/majors
+token: {{token}}
+
+### 添加专业
+POST localhost:8080/api/collegeadmin/majors
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "人工智能",
+  "majorCategoryId": 10101
+}
+
+### -----------------------------------------------
+### 学院管理员添加辅导员
+POST localhost:8080/api/collegeadmin/counselors
+token: {{token}}
+Content-Type: application/json
+
+{
+  "name": "张辅导员",
+  "account": "2046221540",
+  "tel": "13800138000",
+  "majorCategoryId": 10102
+}
+
+### 查询学院辅导员列表
+GET localhost:8080/api/collegeadmin/counselors
+token: {{token}}
+
+#### 删除辅导员  后面的一串是用户id
+#DELETE localhost:8080/api/collegeadmin/counselors/123
+#token: {{token}}
