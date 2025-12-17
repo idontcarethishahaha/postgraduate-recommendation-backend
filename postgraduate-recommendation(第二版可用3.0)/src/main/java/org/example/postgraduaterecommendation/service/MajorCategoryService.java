@@ -134,9 +134,6 @@ public List<CollegeDTO> listCollegesAndMajors() {
     }
 
     // 辅导员是否在类别下
-//    public boolean checkInMajorCateory(long uid, long mcid) {
-//        return userCategoryRepository.checkInMajorCategory(uid, mcid);
-//    }
     public boolean checkInMajorCategory(long uid, long mcid) {
         Integer existsFlag = userCategoryRepository.checkInMajorCategory(uid, mcid);
         return existsFlag != null && existsFlag == 1;
@@ -145,6 +142,5 @@ public List<CollegeDTO> listCollegesAndMajors() {
     public MajorCategory getMajorCategory(long mcid) {
         Optional<MajorCategory> majorCategoryOpt = majorCategoryRepository.findById(mcid);
         return majorCategoryOpt.orElse(null);
-        // 或抛异常：return categoryOpt.orElseThrow(() -> new RuntimeException("类别不存在"));
     }
 }

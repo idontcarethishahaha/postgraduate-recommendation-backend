@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -85,13 +86,56 @@ public class FileService {
     }
 
     //获取文件大小
+//    public long getSize(Path filePath) {
+//        Path fullPath = Paths.get(rootDirectory).resolve(filePath);
+//        try {
+//            return Files.size(fullPath);
+//        } catch (IOException e) {
+//            log.error("获取文件大小失败：{}", fullPath, e);
+//            throw new RuntimeException("获取文件大小失败", e);
+//        }
+//    }
+    //
     public long getSize(Path filePath) {
-        Path fullPath = Paths.get(rootDirectory).resolve(filePath);
+
+        // 1. 统一路径处理：避免重复拼接根目录
+        Path fullPath;
+        if (filePath.isAbsolute()) {
+            // 如果传入的是绝对路径，直接使用
+            fullPath = filePath;
+        } else {
+            // 如果是相对路径，拼接根目录
+            fullPath = Paths.get(rootDirectory).resolve(filePath).normalize();
+        }
+       // log.info("获取文件大小，最终路径：{}", fullPath);
+
+        // 2. 前置校验：文件是否存在
+        if (!Files.exists(fullPath)) {
+            String errorMsg = String.format("文件不存在：%s", fullPath);
+            log.error(errorMsg);
+            throw new RuntimeException(errorMsg);
+        }
+
+        // 3. 前置校验：是否是文件（不是文件夹）
+        if (!Files.isRegularFile(fullPath)) {
+            String errorMsg = String.format("路径不是文件：%s", fullPath);
+            log.error(errorMsg);
+            throw new RuntimeException(errorMsg);
+        }
+
+        // 4. 尝试获取文件大小，精准捕获异常
         try {
             return Files.size(fullPath);
+        } catch (AccessDeniedException e) {
+            // 权限不足
+            String errorMsg = String.format("无读取权限：%s", fullPath);
+            log.error(errorMsg, e);
+            throw new RuntimeException(errorMsg, e);
         } catch (IOException e) {
-            log.error("获取文件大小失败：{}", fullPath, e);
-            throw new RuntimeException("获取文件大小失败", e);
+            // 其他IO异常（如文件损坏、路径非法）
+            String errorMsg = String.format("获取文件大小失败：%s，原因：%s", fullPath, e.getMessage());
+            log.error(errorMsg, e);
+            throw new RuntimeException(errorMsg, e);
         }
     }
 }

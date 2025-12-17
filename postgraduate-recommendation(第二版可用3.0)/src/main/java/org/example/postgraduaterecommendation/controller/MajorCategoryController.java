@@ -131,33 +131,39 @@ public class MajorCategoryController {
         studentItemService.updteStudentItem(req.getStudentItem(), req.getLog());
         return ResultVO.success();
     }
-
-    //文件下载
+    //=======================================
+    // 文件下载
 //    @GetMapping("studentitems/files/{fileid}")
 //    public ResponseEntity<Resource> download(@PathVariable long fileid) throws Exception {
-//        // 获取文件路径
-//        File filePath = studentItemService.getFilePath(fileid);
-//        // 获取文件大小
+//        // 用 Path 接收（studentItemService.getFilePath 返回 Path）
+//        Path filePath = studentItemService.getFilePath(fileid);
+//        // getSize 入参为 Path
 //        long fileSize = fileService.getSize(filePath);
 //
+//        // Path 获取文件名用 getFileName()，并转字符串
+//        String fileName = URLEncoder.encode(
+//                filePath.getFileName().toString(),
+//                StandardCharsets.UTF_8
+//        );
+//
 //        // 构建下载响应头
-//        String fileName = URLEncoder.encode(filePath.getName(), StandardCharsets.UTF_8);
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-//        headers.set("filename", fileName); // 保留原自定义header
+//        headers.set("filename", fileName);
 //        headers.setContentLength(fileSize);
 //
-//        // 封装文件资源返回
+//        // FileSystemResource 支持 Path 类型
 //        Resource resource = new FileSystemResource(filePath);
 //        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
 //    }
-    // 文件下载,有问题
+//
     @GetMapping("studentitems/files/{fileid}")
     public ResponseEntity<Resource> download(@PathVariable long fileid) throws Exception {
         // 用 Path 接收（studentItemService.getFilePath 返回 Path）
         Path filePath = studentItemService.getFilePath(fileid);
         // getSize 入参为 Path
-        long fileSize = fileService.getSize(filePath);
+        //long fileSize = fileService.getSize(filePath);
+        long fileSize = Files.size(filePath);
 
         // Path 获取文件名用 getFileName()，并转字符串
         String fileName = URLEncoder.encode(
